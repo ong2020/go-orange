@@ -47,8 +47,8 @@ var (
 	ByzantiumBlockReward          = SetReward         // Block reward in wei for successfully mining a block upward from Byzantium
 	ConstantinopleBlockReward     = SetReward         // Block reward in wei for successfully mining a block upward from Constantinople
 	CiCiBlockReward               = big.NewInt(0e+18) // Block reward in wei for successfully mining a block upward from Constantinople
-	maxUncles                     = 0                 // Maximum number of uncles allowed in a single block by cici
-	allowedFutureBlockTimeSeconds = int64(15)         // Max seconds from current time allowed for blocks, before they're considered future blocks
+	maxUncles                     = 5                 // Maximum number of uncles allowed in a single block by cici
+	allowedFutureBlockTimeSeconds = int64(302)        // Max seconds from current time allowed for blocks, before they're considered future blocks
 
 	// calcDifficultyEip2384 is the difficulty adjustment algorithm as specified by EIP 2384.
 	// It offsets the bomb 4M blocks from Constantinople, so in total 9M blocks.
