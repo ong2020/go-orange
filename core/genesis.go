@@ -352,9 +352,10 @@ func DefaultRopstenGenesisBlock() *Genesis {
 	return &Genesis{
 		Config:     params.RopstenChainConfig,
 		Nonce:      999,
+		Timestamp:  1620025986,
 		ExtraData:  hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000"),
 		GasLimit:   4700000,
-		Difficulty: big.NewInt(10000000),
+		Difficulty: big.NewInt(1000000),
 		Alloc:      decodePrealloc(ropstenAllocData),
 	}
 }
