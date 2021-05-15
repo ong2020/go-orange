@@ -30,7 +30,7 @@ const (
 	// by cici
 	frontierDurationLimit = 300
 	// minimumDifficulty The minimum that the difficulty may ever be.
-	minimumDifficulty = 131072
+	minimumDifficulty = 49999999
 	// expDiffPeriod is the exponential difficulty period
 	expDiffPeriodUint = 100000
 	// difficultyBoundDivisorBitShift is the bound divisor of the difficulty (2048),
