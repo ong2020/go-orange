@@ -306,11 +306,6 @@ func (s *Orange) APIs() []rpc.API {
 			Service:   downloader.NewPublicDownloaderAPI(s.handler.downloader, s.eventMux),
 			Public:    true,
 		}, {
-			Namespace: "miner",
-			Version:   "1.0",
-			Service:   NewPrivateMinerAPI(s),
-			Public:    false,
-		}, {
 			Namespace: "ong",
 			Version:   "1.0",
 			Service:   filters.NewPublicFilterAPI(s.APIBackend, false, 5*time.Minute),
@@ -431,63 +426,15 @@ func (s *Orange) SetOrangerbase(ongerbase common.Address) {
 // is already running, this Method adjust the number of threads allowed to use
 // and updates the minimum price required by the transaction pool.
 func (s *Orange) StartMining(threads int) error {
-	// Update the thread count within the consensus engine
-	type threaded interface {
-		SetThreads(threads int)
-	}
-	if th, ok := s.engine.(threaded); ok {
-		log.Info("Updated mining threads", "threads", threads)
-		if threads == 0 {
-			threads = -1 // Disable the miner from within
-		}
-		th.SetThreads(threads)
-	}
-	// If the miner was not running, initialize it
-	if !s.IsMining() {
-		// Propagate the initial price point to the transaction pool
-		s.lock.RLock()
-		price := s.gasPrice
-		s.lock.RUnlock()
-		s.txPool.SetGasPrice(price)
-
-		// Configure the local mining address
-		eb, err := s.Orangerbase()
-		if err != nil {
-			log.Error("Cannot start mining without ongerbase", "err", err)
-			return fmt.Errorf("ongerbase missing: %v", err)
-		}
-		if clique, ok := s.engine.(*clique.Clique); ok {
-			wallet, err := s.accountManager.Find(accounts.Account{Address: eb})
-			if wallet == nil || err != nil {
-				log.Error("Orangerbase account unavailable locally", "err", err)
-				return fmt.Errorf("signer missing: %v", err)
-			}
-			clique.Authorize(eb, wallet.SignData)
-		}
-		// If mining is started, we can disable the transaction rejection mechanism
-		// introduced to speed sync times.
-		atomic.StoreUint32(&s.handler.acceptTxs, 1)
-
-		go s.miner.Start(eb)
-	}
 	return nil
 }
 
 // StopMining terminates the miner, both at the consensus engine level as well as
 // at the block creation level.
 func (s *Orange) StopMining() {
-	// Update the thread count within the consensus engine
-	type threaded interface {
-		SetThreads(threads int)
-	}
-	if th, ok := s.engine.(threaded); ok {
-		th.SetThreads(-1)
-	}
-	// Stop the block creating itself
-	s.miner.Stop()
 }
 
-func (s *Orange) IsMining() bool      { return s.miner.Mining() }
+func (s *Orange) IsMining() bool      { return false }
 func (s *Orange) Miner() *miner.Miner { return s.miner }
 
 func (s *Orange) AccountManager() *accounts.Manager  { return s.accountManager }
